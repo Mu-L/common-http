@@ -1,5 +1,6 @@
 package io.github.admin4j.http.config;
 
+import io.github.admin4j.common.http.Http;
 import io.github.admin4j.http.ApiClient;
 import io.github.admin4j.http.ApiJsonClient;
 import io.github.admin4j.http.HttpPropsConfiguration;
@@ -7,7 +8,6 @@ import io.github.admin4j.http.core.HttpDefaultConfig;
 import io.github.admin4j.http.util.HttpJsonUtil;
 import io.github.admin4j.http.util.HttpUtil;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
@@ -20,8 +20,12 @@ import javax.annotation.PostConstruct;
 @EnableConfigurationProperties(HttpPropsConfiguration.class)
 @ConditionalOnProperty(prefix = "admin4j.http", name = "enabled", matchIfMissing = true)
 public class HttpAutoConfiguration implements InitializingBean {
-    @Autowired
+
     HttpPropsConfiguration httpConfig;
+
+    public HttpAutoConfiguration(HttpPropsConfiguration httpConfig) {
+        this.httpConfig = httpConfig;
+    }
 
     @PostConstruct
     public void initHttpClient() {
@@ -31,6 +35,9 @@ public class HttpAutoConfiguration implements InitializingBean {
         HttpUtil.setClient(apiClient);
         ApiJsonClient apiJsonClient = new ApiJsonClient(httpConfig);
         HttpJsonUtil.setClient(apiJsonClient);
+
+        // Initialize new unified API
+        Http.setConfig(httpConfig);
     }
 
     @Override
