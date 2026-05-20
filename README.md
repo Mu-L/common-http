@@ -16,6 +16,7 @@ OkHttpUtil做了一层封装，使Http请求变得无比简单。
 - 自动识别并解压Gzip格式返回内容
 - 支持springboot 配置文件
 - 极简的封装调用
+- 支持链式调用、工具方法调用
 
 # OKHttpUtil使用
 
@@ -26,12 +27,27 @@ maven引入
 <dependency>
     <groupId>io.github.admin4j</groupId>
     <artifactId>http</artifactId>
-    <version>0.9.6</version>
+    <version>0.9.7</version>
 </dependency>
 ```
 
 最新版查询 [https://central.sonatype.com/artifact/io.github.admin4j/http](https://central.sonatype.com/artifact/io.github.admin4j/http)
 
+## 链式调用
+```java
+        HttpResponse resp = Http.get("https://httpbin.org/get")
+                .query("name", "test")
+                .query("page", 1)
+                .execute();
+        assertTrue(resp.isSuccessful());
+        String body = resp.asString();
+        assertNotNull(body);
+        assertTrue(body.contains("name"));
+        assertTrue(body.contains("test"));
+        assertTrue(body.contains("page"));
+```
+
+## 工具方法调用
 ## GET
 
 最简单的使用莫过于用HttpUtil工具类快速请求某个接口：
@@ -150,7 +166,7 @@ maven引入
 <dependency>
     <groupId>io.github.admin4j</groupId>
     <artifactId>common-http-starter</artifactId>
-    <version>0.9.6</version>
+    <version>0.9.7</version>
 </dependency>
 ```
 
